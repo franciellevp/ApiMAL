@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using ApiMAL.EnumData;
+using ApiMAL.Data;
 
 namespace ApiMAL.Controllers
 {
@@ -142,7 +143,6 @@ namespace ApiMAL.Controllers
         ///         "nrWatched": 0,
         ///         "status": "Watching",
         ///         "startDate": "2022-05-23T13:36:08.679Z",
-        ///         "endDate": "",
         ///         "score": 0,
         ///         "timesWatched": 0
         ///     }

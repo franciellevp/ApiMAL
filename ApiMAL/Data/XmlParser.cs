@@ -44,7 +44,7 @@ namespace ApiMAL.Data
                     Id = Convert.ToUInt32(elements.ElementAt(0).Value),
                     Title = elements.ElementAt(1).Value,
                     UserId = userId,
-                    Status = GetStatus(elements.ElementAt(9).Value),
+                    Status = GetStatus(elements.ElementAt(12).Value),
                     Type = type,
                     NrEpisodes = Convert.ToUInt32(elements.ElementAt(3).Value),
                     NrWatched = Convert.ToUInt32(elements.ElementAt(5).Value),
