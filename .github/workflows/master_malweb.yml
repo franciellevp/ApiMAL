@@ -1,0 +1,84 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - MalWeb
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+env:
+  AZURE_WEBAPP_NAME: MalWeb
+  DOTNET_CORE_VERSION: 6.0.x
+  WORKING_DIRECTORY: ApiMAL
+  CONFIGURATION: Release
+  AZURE_WEBAPP_PACKAGE_PATH: ApiMAL/publish
+  AZURE_APIM_RESOURCE_PATH: /v1
+  AZURE_APIM_RESOURCEGROUP: api-mal
+  AZURE_APIM_SERVICENAME: MalWeb
+  AZURE_APIM_API_ID: myanimelist
+  AZURE_APIM_APPSERVICEURL: https://malweb.azurewebsites.net
+  SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 5.6.3
+  SWASHBUCKLE_DOTNET_CORE_VERSION: 3.1.x
+  API_IMPORT_SPECIFICATION_PATH: ApiMAL/publish/swagger.json
+  API_IMPORT_DLL: ApiMAL/publish/ApiMAL.dll
+  API_IMPORT_VERSION: v1
+  
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+      - name: Setup SwashBuckle .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.SWASHBUCKLE_DOTNET_CORE_VERSION }}
+      
+      - name: Restore
+        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
+
+      - name: Build with dotnet
+        run: dotnet build ${{ env.WORKING_DIRECTORY }} --configuration ${{ env.CONFIGURATION }} --no-restore
+
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      
+      - name: Install Swashbuckle CLI .NET Global Tool
+        run: dotnet tool install --global Swashbuckle.AspNetCore.Cli --version ${{ env.SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION }}
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: .net-app
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'MalWeb'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_80F300BC237947CB8E000BA703241932 }}
+          package: .
