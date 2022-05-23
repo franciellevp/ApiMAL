@@ -130,6 +130,24 @@ namespace ApiMAL.Controllers
         /// <summary>
         /// Insert a new anime in the User Anime List
         /// </summary>
+        /// /// <remarks>
+        /// Exemplo:
+        ///
+        ///     POST /AnimeLists
+        ///     {
+        ///         "userId": 1,
+        ///         "title": "New Anime",
+        ///         "type": "OVA",
+        ///         "nrEpisodes": 1,
+        ///         "nrWatched": 0,
+        ///         "status": "Watching",
+        ///         "startDate": "2022-05-23T13:36:08.679Z",
+        ///         "endDate": "",
+        ///         "score": 0,
+        ///         "timesWatched": 0
+        ///     }
+        ///
+        /// </remarks>
         /// <param name="animeList"></param>
         /// <returns>An 201 HTTP Code if the Anime is created successfully or a Message with the problem</returns>
         // POST: api/AnimeLists

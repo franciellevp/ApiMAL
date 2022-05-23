@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,14 +24,21 @@ builder.Services.AddDbContext<AnimeListContext>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme {
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
         Description = "Authorize to use methods with Bearer Scheme. (Type: \"bearer {token}\")",
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Simple MAL API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo {
+        Title = "Simple MAL API",
+        Version = "v1",
+        Description = "Simple ASP.NET Core Web API to make requests in Users Anime List based on data of `myanimelist.net`"
+    });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
