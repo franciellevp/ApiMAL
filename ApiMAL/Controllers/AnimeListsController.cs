@@ -5,17 +5,30 @@ using ApiMAL.EnumData;
 
 namespace ApiMAL.Controllers
 {
+    /// <summary>
+    /// Controller Class to handle the requests of the User Anime List
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class AnimeListsController : ControllerBase
     {
+        /// <summary>
+        /// The database context for queries of the Entity
+        /// </summary>
         private readonly AnimeListContext _context;
 
         public AnimeListsController (AnimeListContext context) {
             _context = context;
         }
 
+        /// <summary>
+        /// List the items of an User Anime List with Pagination
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="status"></param>
+        /// <param name="page"></param>
+        /// <returns>An 200 HTTP Code if some anime is finded, 404 Code if not and 400 Code if something went Wrong</returns>
         // GET: api/AnimeLists/5/1
         [HttpGet("{userid}/{status}/{page}"), AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AnimeList>>> GetUserAnimeList (uint userid, Status? status, int? page = 1) {
@@ -56,6 +69,11 @@ namespace ApiMAL.Controllers
             }
         }
 
+        /// <summary>
+        /// List the Users Id of the database
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns>An 200 HTTP Code if some anime is finded, 404 Code if not and 400 Code if something went Wrong</returns>
         // GET: api/AnimeLists/users
         [HttpGet("users/{page}"), AllowAnonymous]
         public async Task<ActionResult<IEnumerable<AnimeList>>> GetUsersId (int? page = 1) {
@@ -86,6 +104,12 @@ namespace ApiMAL.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Only 1 anime or nothing of the user list.
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="id"></param>
+        /// <returns>An 200 HTTP Code if some anime is finded, 404 Code if not and 400 Code if something went Wrong</returns>
         // GET: api/AnimeLists/5/1/1
         [HttpGet("{userid}/anime/{id}"), AllowAnonymous]
         public async Task<ActionResult<AnimeList>> GetUserAnimeByid (uint userid, uint id) {
@@ -103,8 +127,12 @@ namespace ApiMAL.Controllers
             }
         }
 
+        /// <summary>
+        /// Insert a new anime in the User Anime List
+        /// </summary>
+        /// <param name="animeList"></param>
+        /// <returns>An 201 HTTP Code if the Anime is created successfully or a Message with the problem</returns>
         // POST: api/AnimeLists
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<AnimeList>> PostAnimeList (AnimeList animeList) {
             if (_context.AnimeList == null) {
@@ -116,8 +144,14 @@ namespace ApiMAL.Controllers
             return CreatedAtAction("GetUserAnimeByid", new { userid = animeList.UserId, id = animeList.Id }, animeList);
         }
 
+        /// <summary>
+        /// Update an anime in the User Anime List
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="id"></param>
+        /// <param name="animeList"></param>
+        /// <returns>An 204 HTTP Code if the Anime is updated successfully or a Message with the problem</returns>
         // PUT: api/AnimeLists/5/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{userid}/{id}")]
         public async Task<IActionResult> PutAnimeList (uint userid, uint id, AnimeList animeList) {
             if (id != animeList.Id || userid != animeList.UserId) {
@@ -138,6 +172,12 @@ namespace ApiMAL.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Delete an anime from the user list
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // DELETE: api/AnimeLists/5/5
         [HttpDelete("{userid}/{id}")]
         public async Task<IActionResult> DeleteAnimeList (uint userid, uint id) {
@@ -157,6 +197,11 @@ namespace ApiMAL.Controllers
             }
         }
 
+        /// <summary>
+        /// Check if the anime id exists
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         private bool AnimeListExists (uint id) {
             return (_context.AnimeList?.Any(e => e.Id == id)).GetValueOrDefault();
         }

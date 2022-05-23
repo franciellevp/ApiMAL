@@ -15,17 +15,16 @@ builder.Services.Configure<JsonOptions>(options => {
 });
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AnimeListContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme {
-        Description = "Authorize to use methods with Bearer Scheme (\"bearer {token}\")",
+        Description = "Authorize to use methods with Bearer Scheme. (Type: \"bearer {token}\")",
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey

@@ -5,14 +5,24 @@ using System.Globalization;
 
 namespace ApiMAL.Data
 {
+    /// <summary>
+    /// Parser to interprete a XML File with an user Anime List info
+    /// </summary>
     public class XmlParser
     {
+        /// <summary>
+        /// A list to save all anime of an user list
+        /// </summary>
         public List<AnimeList> UserListParser { get; set; }
 
         public XmlParser () {
             UserListParser = new List<AnimeList>();
         }
 
+        /// <summary>
+        /// Method to Parse the XML file
+        /// </summary>
+        /// <returns>A list containg all the readed and important data of the XML file</returns>
         public List<AnimeList> Parse () {
             var filename = "animelist_1.xml";
             var currentDirectory = Directory.GetCurrentDirectory();
@@ -29,7 +39,6 @@ namespace ApiMAL.Data
             for (int i = 0; i < animes.Count(); i++) {
                 var elements = animes.ElementAt(i);
                 AnimeType type;
-                Status status;
                 Enum.TryParse(elements.ElementAt(2).Value, out type);
                 AnimeList anime = new AnimeList {
                     Id = Convert.ToUInt32(elements.ElementAt(0).Value),
@@ -50,16 +59,26 @@ namespace ApiMAL.Data
             return UserListParser;
             
         }
+        
+        /// <summary>
+        /// Convert a String to DateTime type
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns>A nullable DateTime</returns>
         private DateTime? StringToDateTime (string date) {
             if (date.Substring(0, 4) == "0000") {
                 return null;
             }
             date = date.Replace("-", "/");
-            Console.WriteLine(date);
             DateTime? myDate = DateTime.Parse(date);
             return myDate;
         }
 
+        /// <summary>
+        /// Parse the anime status classification in the XML file
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns>An Enum value of Status</returns>
         private Status GetStatus (string type) {
             Status result;
             switch (type) {
@@ -79,7 +98,7 @@ namespace ApiMAL.Data
                     result = Status.Onhold;
                     break;
                 default:
-                    result = Status.Watching;
+                    result = Status.Completed;
                     break;
             }
             return result;
