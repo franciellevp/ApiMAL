@@ -9,8 +9,8 @@ namespace ApiMAL.Controllers
     /// <summary>
     /// Controller Class to handle the requests of the User Anime List
     /// </summary>
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("/")]
     [Authorize]
     public class AnimeListsController : ControllerBase
     {
