@@ -12,8 +12,8 @@ namespace ApiMAL
 {
     public class Startup
     {
-        public Startup (IConfigurationRoot configuration) {
-            Configuration = configuration;
+        public Startup (IConfiguration configuration) {
+            Configuration = (IConfigurationRoot)configuration;
         }
         public IConfigurationRoot Configuration { get; }
         public void ConfigureServices (IServiceCollection services) {
